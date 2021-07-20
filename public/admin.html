@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+    <link rel="stylesheet" href="./css/index.css">
+</head>
+<body>
+    <video controls></video>
+    <button style="position: absolute; top: 20px; left:20px" onclick="play()">Play</button>
+    <button style="position: absolute; top: 80px; left:20px" onclick="pause()">Pause</button>
+    <div id='url'>
+        <input id="urlinpt" type="text"/>
+        <button onclick="setURL()">Enviar</button>
+    </div>
+    <script>
+        var socket = io(location.origin.replace(/^http/, 'ws'));
+        let video = document.getElementsByTagName('video')[0]
+        socket.on('previewURL' , function(msg) {
+            console.log(msg)
+            video.src = msg
+        });
+        function setURL(){
+            let input = document.getElementsByTagName('input')[0]
+            video.src = input.value
+            socket.emit('url', input.value)
+        }
+        function play() {
+            let obj = {
+                action: 'play',
+                time: video.currentTime
+            }
+            socket.emit('action', obj)
+            video.play()
+        }
+        function pause() {
+            let obj = {
+                action: 'pause',
+                time: video.currentTime
+            }
+            socket.emit('action', obj)
+            video.pause()
+        }
+    </script>
+</body>
+</html>

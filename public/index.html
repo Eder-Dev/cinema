@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+    <link rel="stylesheet" href="./css/index.css">
+</head>
+<body>
+    <video controls></video>
+    <script>
+        var socket = io(location.origin.replace(/^http/, 'ws'));
+        let video = document.getElementsByTagName('video')[0]
+        socket.on('previewURL' , function(msg) {
+            console.log(msg)
+            video.src = msg
+        });
+
+        socket.on('action_response', function(msg) {
+            console.log('pegou' + msg.action);
+            if (msg.action === 'play') {
+                video.currentTime = msg.time
+                video.play()
+            }else{
+                if (msg.action === 'pause') {
+                    video.pause()
+                }
+            }
+        });
+        socket.on('url_res', function(msg) {
+            console.log('pegou' + msg.action);
+            video.pause()
+            video.currentTime = 0
+            video.src = msg
+        });
+        url_res
+    </script>
+</body>
+</html>
